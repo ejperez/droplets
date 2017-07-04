@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Droplets</title>
+    <style>
+        body {
+            overflow: hidden;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+    </style>
+    <script src="js/droplet.js"></script>
+    <script src="js/functions.js"></script>
+    <script src="js/throttle.js"></script>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="1920" height="1080"></canvas>
+
+    <script>
+        var mainCanvas = document.querySelector("#myCanvas");
+        var mainContext = mainCanvas.getContext("2d");
+
+        var canvasWidth = mainCanvas.width;
+        var canvasHeight = mainCanvas.height;
+
+        var requestAnimationFrame = window.requestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.msRequestAnimationFrame;
+
+        var droplets = [];
+        var dropletsForCleanup = [];
+
+        var createDroplet = function (evt) {
+            var mousePos = getMousePos(mainCanvas, evt);
+            var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+
+            var droplet = new Droplet();
+            droplet.xPosition = mousePos.x;
+            droplet.yPosition = mousePos.y;
+            droplet.maxRadius = generateRandomInt(50, 200);
+
+            droplets.push(droplet);
+        };
+
+        mainCanvas.addEventListener('mousemove', throttle(createDroplet, 100), false);
+
+        function draw() {
+            mainContext.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            // Color in the background
+            mainContext.fillStyle = "#000";
+            mainContext.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // Draw the droplets
+            droplets.forEach(function (droplet, index) {
+                if (droplet !== null && droplet.isActive) {
+                    droplet.draw(mainContext);
+                } else {
+                    dropletsForCleanup.push(index);
+                }
+            });
+
+            // Cleanup the inactive droplets
+            var currentDropletIndex = dropletsForCleanup.pop();
+            while (currentDropletIndex !== undefined) {
+                droplets.splice(currentDropletIndex, 1);
+                currentDropletIndex = dropletsForCleanup.pop();
+            }
+
+            console.log('Droplets count: ' + droplets.length);
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+</body>
+
+</html>
