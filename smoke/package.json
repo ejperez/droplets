@@ -1,0 +1,25 @@
+{
+  "name": "js-droplets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:js": "babel src/js/* | uglifyjs --mangle > dist/js/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ejperez/droplets.git"
+  },
+  "author": "EJ Perez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ejperez/droplets/issues"
+  },
+  "homepage": "https://github.com/ejperez/droplets#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-preset-env": "^1.6.0",
+    "uglifyjs": "^2.4.11"
+  }
+}
